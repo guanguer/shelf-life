@@ -34,3 +34,14 @@ test('protected routes redirect unauthenticated readers to login', async ({ page
 	await page.goto('/shelf');
 	await expect(page).toHaveURL(/\/login\?returnTo=%2Fshelf$/);
 });
+
+test('clicking on "Design System" in the primary navigation takes readers to the design system page', async ({
+	page
+}) => {
+	await page.goto('/');
+
+	const primaryNavigation = page.getByRole('navigation', { name: 'Primary' });
+	await primaryNavigation.getByRole('link', { name: 'Design System' }).click();
+
+	await expect(page).toHaveURL('/design-system');
+});
