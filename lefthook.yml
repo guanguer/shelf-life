@@ -18,9 +18,21 @@
 #       run: bundle audit
 #
 pre-commit:
-  parallel: true
+  # Run jobs one after another so lint/typecheck don't compete with Playwright
+  # for CPU (running them in parallel made the e2e suite flaky), and stop at the
+  # first failure so the slow test suite only runs once the cheap checks pass.
+  piped: true
   jobs:
-    - run: npm run lint {staged_files}
-      glob: '*.{js,ts,jsx,tsx}'
+    - name: format
+      run: npx prettier --check --ignore-unknown {staged_files}
+      glob: '*.{js,ts,jsx,tsx,svelte,css,json,md,yml,yaml,html}'
 
-    - run: npm test
+    - name: lint
+      run: npx eslint {staged_files}
+      glob: '*.{js,ts,jsx,tsx,svelte}'
+
+    - name: typecheck
+      run: npm run typecheck
+
+    - name: test
+      run: npm test
