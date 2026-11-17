@@ -17,4 +17,6 @@ test('search by author returns results', async ({ page }) => {
 	await page.getByRole('button', { name: 'Search' }).click();
 	await expect(page.getByRole('heading', { name: 'Search results' })).toBeVisible();
 	await expect(page.getByText('10 results')).toBeVisible();
+
+	await expect(page).toHaveScreenshot('search-page.png');
 });
